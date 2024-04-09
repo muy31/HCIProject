@@ -109,40 +109,55 @@
             
             <script>
                 //The sun drawing
+                const sunCanvas = document.getElementById("sun-canvas");
+                const ctx = sunCanvas.getContext("2d");
+                let raf;
 
-                let sunCanvas = document.getElementById("sun-canvas");
-                const w = sunCanvas.width;
-                const h = sunCanvas.height;
-                var ctx = sunCanvas.getContext("2d");
+                let dotangle = 0;
 
-                function drawSun(x, y, innerRadius, numDots, radius, ctx) {
+                function drawSun(x, y, innerRadius, numDots, radius, ctx, dotAngleOffset) {
 
+                    //Inner Circle
                     ctx.fillStyle = "yellow";
                     ctx.beginPath();
                     ctx.ellipse(x, y, innerRadius, innerRadius, 0, 0, 2 * Math.PI);
                     ctx.fill();
 
-                    //Returns coordinates relative to center of the circle
-                    const coordinates = [];
+                    //Eyeballs
+                    const eyeOffsetX = (innerRadius - x) * 0.45;
+                    const eyeOffsetY = (innerRadius - y) * 0.12;
+                    const eyeAngle = Math.PI / 180 * 5; //15 degrees
+
+                    ctx.fillStyle = "black";
+                    ctx.beginPath();
+                    ctx.ellipse(x - eyeOffsetX, y + eyeOffsetY, innerRadius / 4.5, innerRadius / 3.5, eyeAngle, 0, 2 * Math.PI);
+                    ctx.ellipse(x + eyeOffsetX, y + eyeOffsetY, innerRadius / 4.5, innerRadius / 3.5, -eyeAngle, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    //Sun "spokes"
                     ctx.fillStyle = "red";
                     
                     for (let i = 0; i < numDots; i++) {
-                        const angle = (2 * Math.PI / numDots) * i;
+                        const angle = (2 * Math.PI / numDots) * i + dotAngleOffset;
                         const xPos = Math.cos(angle) * radius + x; //Add left shift
                         const yPos = Math.sin(angle) * radius + y;
-
-                        coordinates.push([xPos, yPos]);
 
                         ctx.beginPath();
                         ctx.ellipse(xPos, yPos, 5, 5, 0, 0, 2 * Math.PI);
                         ctx.fill();
                     }
-
-                    console.log(coordinates);
                 }
 
                 //Draw it
-                drawSun(w/2, h/2, w * 0.25, 8, w*0.40, ctx);
+                function draw() {
+                    ctx.clearRect(0, 0, sunCanvas.width, sunCanvas.height);
+                    dotangle += Math.PI / 180 * 2;
+                    drawSun(sunCanvas.width / 2, sunCanvas.width / 2, sunCanvas.width * 0.25, 8, sunCanvas.width * 0.37, ctx, dotangle);
+                    raf = window.requestAnimationFrame(draw);
+                }
+
+                raf = window.requestAnimationFrame(draw);
+                
                 
             </script>
         </div>
@@ -221,6 +236,9 @@
 
             Object.keys(sampleResults).forEach(result => {
                 const button = document.createElement('button');
+
+                //Add button metadata here (like links and stuff)
+
                 const randomColor = '#' + Math.random().toString(16).slice(-6);
                 const buttonSize = (Math.log2(sampleResults[result] + 1) * 25 + 1) + 'px';
                 button.style.backgroundColor = randomColor;
