@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Page</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,15 +68,13 @@
         }
 
         .result-button {
-            margin: 10px;
+            margin: 5%;
             background-color: #007bff;
             color: white;
             border: none;
             cursor: pointer;
             border-radius: 50%;
             outline: none;
-            width: 90px;
-            height: 90px;
             text-align: center;
         }
 
@@ -97,13 +96,10 @@
             border-color: blue;
             border-width: 2px;
         }
-
     </style>
 </head>
 
-
 <body>
-
     <header>
         <button id="exit-button">Exit!</button>
 
@@ -112,6 +108,8 @@
             <canvas id="sun-canvas" width="120" height="120"></canvas>
             
             <script>
+                //The sun drawing
+
                 let sunCanvas = document.getElementById("sun-canvas");
                 const w = sunCanvas.width;
                 const h = sunCanvas.height;
@@ -143,13 +141,11 @@
                     console.log(coordinates);
                 }
 
+                //Draw it
                 drawSun(w/2, h/2, w * 0.25, 8, w*0.40, ctx);
                 
             </script>
         </div>
-
-        
-
     </header>
 
     <div id="lower-body">
@@ -161,13 +157,20 @@
         </div>
 
         <div id="results"></div>
-
     </div>
-
-    
 
     <script>
         // Sample results
+
+        sampleResults = {
+            "Sculptures": 5,
+            "Violin": 10,
+            "Afrobeats": 60,
+            "Kenya": 15,
+            "Skiiing" : 15
+            };
+
+        /*
         var fs = require("fs");
         fs.readFile("./searchDatabase.txt", function (text) {
             const samplePossibleResults = text.split("\n");
@@ -209,14 +212,20 @@
                 }
             }
         }
+        */
 
         // Function to display results as buttons
-        function displayResults() {
+        function displayResults(sampleResults) {
             const resultsContainer = document.getElementById('results');
             resultsContainer.innerHTML = ''; // Clear previous results
 
-            sampleResults.forEach(result => {
+            Object.keys(sampleResults).forEach(result => {
                 const button = document.createElement('button');
+                const randomColor = '#' + Math.random().toString(16).slice(-6);
+                const buttonSize = (Math.log2(sampleResults[result] + 1) * 25 + 1) + 'px';
+                button.style.backgroundColor = randomColor;
+                button.style.width = buttonSize;
+                button.style.height = buttonSize;
                 button.classList.add('result-button');
                 button.textContent = result;
                 resultsContainer.appendChild(button);
@@ -224,10 +233,10 @@
         }
 
         // Event listener for search bar
-        document.getElementById('search-bar').addEventListener('input', searchFor);
+        document.getElementById('search-bar').addEventListener('input', displayResults);
 
         // Initial display of results
-        displayResults();
+        displayResults(sampleResults);
 
         // Event listener for exit button
         document.getElementById('exit-button').addEventListener('click', () => {
