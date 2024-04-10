@@ -104,7 +104,7 @@
 <body>
     <header>
         <button id="exit-button">Exit!</button>
-
+        
         <div id="sun-back">
 
             <a href="">
@@ -303,11 +303,10 @@
                 button.textContent = result;
                 resultsContainer.appendChild(button);
 
-                //const startx = (resultsContainer.offsetWidth / (result_len + 2) * (index + 1)) + 'px';
-
-                //console.log(resultsContainer.offsetWidth);
-
-                //button.style.left = startx;
+                button.addEventListener('click', () => {
+                    // Handle exit action
+                    document.location.href = "specificQuestList.html";
+                });
 
                 //Animate
                 animateButton(button, index);
@@ -359,7 +358,7 @@
         // Event listener for exit button
         document.getElementById('exit-button').addEventListener('click', () => {
             // Handle exit action
-            console.log('Exit button clicked');
+            document.location.href = "QuestHover.html";
         });
     </script>
 </body>

@@ -215,7 +215,7 @@
     <div id="lower-body">
 
         <div class="hover-button-container">
-            
+
             <h2>Hover for 2 seconds to explore some random quests</h2>
         </div>
 
@@ -228,8 +228,12 @@
         </div>
     </div>
 
+    <script src="../assets/scripts/timer.js"></script>
 
     <script>
+
+        const urls = ["questList.html", "SearchPage.html", ""];
+
         const containers = document.getElementsByClassName("hover-button-container");
 
         for (let i = 0; i < containers.length; i++) {
@@ -259,7 +263,7 @@
 
                 button.style.backgroundColor = darkerColor;
                 timer.on = true;
-                continueTimer(timer, button);
+                continueTimer(timer, button, urls[i]);
             });
 
             button.addEventListener('mouseleave', () => {
@@ -268,25 +272,12 @@
                 timer.timeLeft = 2;
                 timer.on = false;
             });
-        }
 
-        function continueTimer(timerDetails, textBox) {
-            const downloadTimer = setInterval(function () {
-                if (timerDetails.on) {
-                    if (timerDetails.timeLeft <= 0) {
-                        clearInterval(downloadTimer);
-                        textBox.innerHTML = "😊";
+            document.getElementById('exit-button').addEventListener('click', () => {
+                // Handle exit action
+                document.location.href = "homePage.html";
+            });
 
-                        //Navigate here
-
-                    } else {
-                        textBox.innerHTML = Math.floor(timerDetails.timeLeft) + 1;
-                    }
-                    timerDetails.timeLeft -= 0.01;
-                } else {
-                    textBox.innerHTML = "";
-                }
-            }, 10);
         }
     </script>
 </body>

@@ -10,17 +10,25 @@
 
 <body>
     <div class="container">
-        <a href="" class="quest" id="exit">Exit!</a>
-        <div class="quest" id="painting-people">Rock Climbing<span>50 likes</span></div>
-        <div class="quest" id="fingerpainting">Fingerpainting<span>5 likes</span></div>
-        <div class="quest" id="childrens-painting">Yoga Class<span>15 likes</span></div>
-        <div class="quest" id="learning-watercolor">Ballroom Dancing<span>10 likes</span></div>
-        <div class="quest" id="learning-sketching">Movie Night<span>3 likes</span></div>
-    
+        <a href="QuestHover.html" class="quest" id="exit">Exit!</a>
+        <div class="quest" id="painting-people">Rock Climbing<span>50 quests</span></div>
+        <div class="quest" id="fingerpainting">Fingerpainting<span>5 quests</span></div>
+        <div class="quest" id="childrens-painting">Yoga Class<span>15 quests</span></div>
+
+        <a href="QuestInvite.html"><div class="quest" id="learning-watercolor">Learning Watercolor<span>10 quests</span></div></a>
+
+        <div class="quest" id="learning-sketching">Movie Night<span>3 quests</span></div>
+
         <div class="sun-container">
-            <div class="back-button">Hover over me to go back</div>
+            <a href="QuestHover.html">
+                <canvas id="sun-canvas" width="120" height="120"></canvas>
+            </a>
             <div class="join-message">Want to like or accept a quest?<br>Hover over a quest for two seconds</div>
         </div>
+
     </div>
+
+    <script src="../assets/scripts/canvasSun.js"></script>
+
 </body>
 </html>
