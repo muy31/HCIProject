@@ -25,7 +25,7 @@
             align-items: center;
             border-color: black;
             border-style: dashed;
-            border-width: 2px;
+            border-width: 0px;
             justify-content: space-around;
         }
 
@@ -56,6 +56,9 @@
             cursor: pointer;
             border-radius: 5px;
             outline: none;
+            height: 100%;
+            width: 150px;
+            font-size: 15px;
         }
 
         #sun-back {
@@ -64,22 +67,30 @@
             left: 85%;
         }
 
-        #hover-button-container {
-            align-content: center;
+        .hover-button-container {
+            align-content: flex-start;
             text-align: center;
             border-color: red;
             border-style: solid;
-            border-width: 2px;
-            width: 28%;
-            height: 70%;
+            border-width: 0px;
+            width: 30%;
+            height: 85%;
         }
 
         .hover-button {
             background-color: mediumpurple;
             border-radius: 50%;
             width: 80%;
-            border-width:0px;
-            margin: 4%;
+            border-width: 0px;
+            margin-top: 35%;
+            margin-bottom: 10%;
+            text-align: center;
+            font-size: 120px;
+            font-weight: bolder; 
+        }
+
+        h2 {
+            padding: 10px;
         }
 
     </style>
@@ -96,8 +107,8 @@
             <a href="">
                 <canvas id="sun-canvas" width="120" height="120"></canvas>
             </a>
-            
-            
+
+
             <script>
                 //The sun drawing
                 const sunCanvas = document.getElementById("sun-canvas");
@@ -127,7 +138,7 @@
 
                     //Sun "spokes"
                     ctx.fillStyle = "red";
-                    
+
                     for (let i = 0; i < numDots; i++) {
                         const angle = (2 * Math.PI / numDots) * i + dotAngleOffset;
                         const xPos = Math.cos(angle) * radius + x; //Add left shift
@@ -196,58 +207,87 @@
                 }
 
                 raf = window.requestAnimationFrame(draw);
-                
+
             </script>
         </div>
     </header>
 
     <div id="lower-body">
 
-        <div id="hover-button-container">
-
-            <script>
-                const container = document.getElementById("hover-button-container");
-                const button = document.createElement('button');
-                button.classList.add('hover-button');
-                container.appendChild(button);
-
-                button.style.height = button.offsetWidth + "px";
-
-            </script>
-
+        <div class="hover-button-container">
+            
             <h2>Hover for 2 seconds to explore some random quests</h2>
         </div>
 
-        <div id="hover-button-container">
-
-            <script>
-                const container = document.getElementById("hover-button-container");
-                const button = document.createElement('button');
-                button.classList.add('hover-button');
-                container.appendChild(button);
-
-                button.style.height = button.offsetWidth + "px";
-
-            </script>
-
-            <h2>Hover for 2 seconds to explore some random quests</h2>
+        <div class="hover-button-container">
+            <h2>Hover for 2 seconds to search for quests by interest</h2>
         </div>
 
-        <div id="hover-button-container">
-
-            <script>
-                const container = document.getElementById("hover-button-container");
-                const button = document.createElement('button');
-                button.classList.add('hover-button');
-                container.appendChild(button);
-
-                button.style.height = button.offsetWidth + "px";
-
-            </script>
-
-            <h2>Hover for 2 seconds to explore some random quests</h2>
+        <div class="hover-button-container">
+            <h2>Hover for 2 secs to propose a quest</h2>
         </div>
-
     </div>
+
+
+    <script>
+        const containers = document.getElementsByClassName("hover-button-container");
+
+        for (let i = 0; i < containers.length; i++) {
+            container = containers[i];
+
+            const button = document.createElement('button');
+            button.classList.add('hover-button');
+            container.prepend(button);
+
+            //Button metadata
+            button.style.height = button.offsetWidth + "px";
+            const randomValue = Math.random();
+            const randomColor = '#' + randomValue.toString(16).slice(-6);
+            button.style.backgroundColor = randomColor;
+
+            console.log(container);
+
+            const timer = { timeLeft: 2, on: false };
+
+            //Button callbacks
+            button.addEventListener('mouseover', () => {
+                // Handle exit action
+                let darkerValue = randomValue - 0.2;
+                darkerValue = darkerValue < 0 ? 0 : darkerValue;
+
+                let darkerColor = '#' + darkerValue.toString(16).slice(-6);
+
+                button.style.backgroundColor = darkerColor;
+                timer.on = true;
+                continueTimer(timer, button);
+            });
+
+            button.addEventListener('mouseleave', () => {
+                button.style.backgroundColor = randomColor;
+                button.innerHTML = "";
+                timer.timeLeft = 2;
+                timer.on = false;
+            });
+        }
+
+        function continueTimer(timerDetails, textBox) {
+            const downloadTimer = setInterval(function () {
+                if (timerDetails.on) {
+                    if (timerDetails.timeLeft <= 0) {
+                        clearInterval(downloadTimer);
+                        textBox.innerHTML = "😊";
+
+                        //Navigate here
+
+                    } else {
+                        textBox.innerHTML = Math.floor(timerDetails.timeLeft) + 1;
+                    }
+                    timerDetails.timeLeft -= 0.01;
+                } else {
+                    textBox.innerHTML = "";
+                }
+            }, 10);
+        }
+    </script>
 </body>
 </html>
