@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Page</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #lower-body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            background-color: white;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #search-bar {
+            width: 95%;
+            flex-grow: 1;
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 30px;
+            font-weight: 500;
+            background-color: lightgray;
+            border-width: 0px;
+        }
+
+        #search-area {
+            width: 95%;
+            height: 15%;
+            border-color: brown;
+            text-align: left;
+            align-items: center;
+            padding-bottom: 1%;
+            padding-top: 1%;
+        }
+
+        #results {
+            width: 90%;
+            max-height: 50%;
+            overflow: hidden;
+            position: relative;
+            margin-top: 5%;
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .result-button {
+            position: absolute;
+            margin: 5%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+            outline: none;
+            text-align: center;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #exit-button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        #sun-back {
+            position: absolute;
+            top: 2%;
+            left: 85%;
+            border-color: blue;
+            border-width: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <button id="exit-button">Exit!</button>
+
+        <div id="sun-back">
+
+            <a href="">
+                <canvas id="sun-canvas" width="120" height="120"></canvas>
+            </a>
+            
+            
+            <script>
+                //The sun drawing
+                const sunCanvas = document.getElementById("sun-canvas");
+                const ctx = sunCanvas.getContext("2d");
+                let raf;
+
+                let dotangle = 0;
+
+                function drawSun(x, y, innerRadius, numDots, radius, ctx, dotAngleOffset) {
+
+                    //Inner Circle
+                    ctx.fillStyle = "yellow";
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, innerRadius, innerRadius, 0, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    //Eyeballs
+                    const eyeOffsetX = (innerRadius - x) * 0.45;
+                    const eyeOffsetY = (innerRadius - y) * 0.12;
+                    const eyeAngle = Math.PI / 180 * 5; //15 degrees
+
+                    ctx.fillStyle = "black";
+                    ctx.beginPath();
+                    ctx.ellipse(x - eyeOffsetX, y + eyeOffsetY, innerRadius / 4.5, innerRadius / 3.5, eyeAngle, 0, 2 * Math.PI);
+                    ctx.ellipse(x + eyeOffsetX, y + eyeOffsetY, innerRadius / 4.5, innerRadius / 3.5, -eyeAngle, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    //Sun "spokes"
+                    ctx.fillStyle = "red";
+                    
+                    for (let i = 0; i < numDots; i++) {
+                        const angle = (2 * Math.PI / numDots) * i + dotAngleOffset;
+                        const xPos = Math.cos(angle) * radius + x; //Add left shift
+                        const yPos = Math.sin(angle) * radius + y;
+
+                        ctx.beginPath();
+                        ctx.ellipse(xPos, yPos, 5, 5, 0, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
+                    
+                    //Pupils
+                    const mouseXY = { x: 0, y: 0 };
+
+                    const pupil1XY = calculatePupilPosition(x - eyeOffsetX, y + eyeOffsetY, 0, 0, innerRadius / 4.5, innerRadius / 3.5);
+                    const pupil2XY = calculatePupilPosition(x + eyeOffsetX, y + eyeOffsetY, 0, 0, innerRadius / 4.5, innerRadius / 3.5);
+
+                    ctx.fillStyle = "white";
+                    ctx.beginPath();
+                    ctx.ellipse(pupil1XY.x, pupil1XY.y, 3, 3, mouseXY.x, mouseXY.y, 2 * Math.PI);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.ellipse(pupil2XY.x, pupil2XY.y, 3, 3, mouseXY.x, mouseXY.y, 2 * Math.PI);
+                    ctx.fill();
+                }
+
+                function calculatePupilPosition(pupilX, pupilY, lookAtX, lookAtY, boundsWidth, boundsHeight) {
+                    // If the lookAt point is within the bounds, return the lookAt point
+                    if (lookAtX >= pupilX - boundsWidth / 2 && lookAtX <= pupilX + boundsWidth / 2 &&
+                        lookAtY >= pupilY - boundsHeight / 2 && lookAtY <= pupilY + boundsHeight / 2) {
+                        return { x: lookAtX, y: lookAtY };
+                    }
+
+                    // Calculate the distance between pupil and the point it's looking at
+                    const dx = lookAtX - pupilX;
+                    const dy = lookAtY - pupilY;
+
+                    // Calculate the angle between the line connecting pupil and the point it's looking at and the x-axis
+                    let angle = Math.atan2(dy, dx);
+
+                    // Ensure the angle is between 0 and 2*pi
+                    if (angle < 0) {
+                        angle += 2 * Math.PI;
+                    }
+
+                    // Calculate the position within the ellipse based on the angle
+                    const semiMajorAxis = boundsWidth / 2;
+                    const semiMinorAxis = boundsHeight / 2;
+                    const ellipseRadius = (semiMajorAxis * semiMinorAxis) / Math.sqrt(
+                        (semiMinorAxis * Math.cos(angle)) ** 2 + (semiMajorAxis * Math.sin(angle)) ** 2
+                    );
+
+                    // Calculate the position of the pupil within the elliptical bounds
+                    const pupilPositionX = pupilX + ellipseRadius * Math.cos(angle);
+                    const pupilPositionY = pupilY + ellipseRadius * Math.sin(angle);
+
+                    return { x: pupilPositionX, y: pupilPositionY };
+                }
+
+                //Draw it
+                function draw() {
+                    ctx.clearRect(0, 0, sunCanvas.width, sunCanvas.height);
+                    dotangle += Math.PI / 180 * 2;
+                    drawSun(sunCanvas.width / 2, sunCanvas.width / 2, sunCanvas.width * 0.25, 8, sunCanvas.width * 0.37, ctx, dotangle);
+                    raf = window.requestAnimationFrame(draw);
+                }
+
+                raf = window.requestAnimationFrame(draw);
+                
+            </script>
+        </div>
+    </header>
+
+    <div id="lower-body">
+
+        <div id="search-area">
+            <h2>Search for an interest...</h2>
+            <input type="text" id="search-bar" placeholder="Search...">
+            <h2>Or explore popular communities as they float by...</h2>
+        </div>
+
+        <div id="results"></div>
+
+    </div>
+
+    <script>
+        // Sample results
+
+        sampleResults = {
+            "Sculptures": 5,
+            "Violin": 10,
+            "Afrobeats": 60,
+            "Kenya": 15,
+            "Skiiing" : 15
+            };
+
+        /*
+        var fs = require("fs");
+        fs.readFile("./searchDatabase.txt", function (text) {
+            const samplePossibleResults = text.split("\n");
+        });
+
+        console.log(samplePossibleResults);
+
+        function searchFor() {
+            const input = document.getElementById('search-bar').value;
+            console.log(input);
+
+            topFiveResults = {};
+
+            for (let i = 0; i < samplePossibleResults.length; i++) {
+
+                const worst_key = compareValueKey(topFiveResults, function (a, b) { return topFiveResults[a] > topFiveResults[b] ? a : b });
+
+                while (Object.keys(topFiveResults).length > 5) {
+                    //Trim off worst one
+                    delete topFiveResults[worst_key];
+                    worst_key = compareValueKey(topFiveResults, function (a, b) { return topFiveResults[a] > topFiveResults[b] ? a : b });
+                }
+
+                const value = Math.abs(input.localeCompare(samplePossibleResults[i]));
+                if (value < topFiveResults[worst_key]) {
+                    topFiveResults[samplePossibleResults[i]] = value;
+                    delete topFiveResults[worst_key];
+                }
+            }
+        }
+
+        function compareValueKey(dict, func) {
+            highestKey = null;
+            for (const key of Object.keys(dict)) {
+                if (highestKey == null) {
+                    highestKey = key;
+                } else {
+                    highestKey = func(key, highestKey);
+                }
+            }
+        }
+        */
+
+        // Function to display results as buttons
+        function displayResults(sampleResults) {
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = ''; // Clear previous results
+            let index = 0;
+            let result_len = Object.keys(sampleResults).length;
+
+            Object.keys(sampleResults).forEach(result => {
+                const button = document.createElement('button');
+
+                //Add button metadata here (like links and stuff)
+
+                const randomColor = '#' + Math.random().toString(16).slice(-6);
+                const buttonSize = (Math.log2(sampleResults[result] + 1) * 25 + 1) + 'px';
+                button.style.backgroundColor = randomColor;
+                button.style.width = buttonSize;
+                button.style.height = buttonSize;
+                button.classList.add('result-button');
+                button.textContent = result;
+                resultsContainer.appendChild(button);
+
+                //const startx = (resultsContainer.offsetWidth / (result_len + 2) * (index + 1)) + 'px';
+
+                //console.log(resultsContainer.offsetWidth);
+
+                //button.style.left = startx;
+
+                //Animate
+                animateButton(button, index);
+                index++;
+            });
+        }
+
+        function animateButton(button, index) {
+            const containerWidth = document.getElementById('results').offsetWidth;
+            const containerHeight = document.getElementById('results').offsetHeight;
+            const buttonWidth = button.offsetWidth;
+            const buttonHeight = button.offsetHeight;
+            const amplitude = 50; // Amplitude of the sinusoidal motion
+            const speed = 1; // Speed of the sinusoidal motion
+            const hSpeed = 50; // Speed of the horizontal
+            const initialXPosition = (containerWidth / 5) * (index % 5 - 4) - buttonWidth/2;
+
+            // Initial position of the button
+            button.style.left = initialXPosition + 'px';
+            button.style.top = (containerHeight - buttonHeight) / 2 + 'px';
+
+            function move() {
+                const time = performance.now() * 0.001;
+                const x = hSpeed * time + index;// Adjust phase for each button
+                const y = amplitude * Math.sin(speed * time + index * Math.PI / 2);
+
+                // Calculate the new position of the button
+                let newPositionX = (initialXPosition + x) % containerWidth - buttonWidth/2;
+                let newPositionY = (containerHeight - buttonHeight) / 2 + y - buttonHeight/2;
+
+                // Set the new position of the button
+                button.style.left = newPositionX + 'px';
+                button.style.top = newPositionY + 'px';
+
+                // Request next animation frame
+                requestAnimationFrame(move);
+            }
+
+            // Start the animation loop
+            move();
+        }
+
+        // Event listener for search bar
+        document.getElementById('search-bar').addEventListener('input', displayResults);
+
+        // Initial display of results
+        displayResults(sampleResults);
+
+        // Event listener for exit button
+        document.getElementById('exit-button').addEventListener('click', () => {
+            // Handle exit action
+            console.log('Exit button clicked');
+        });
+    </script>
+</body>
+</html>
