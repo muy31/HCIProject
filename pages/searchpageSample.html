@@ -325,8 +325,8 @@
             const buttonHeight = button.offsetHeight;
             const amplitude = 50; // Amplitude of the sinusoidal motion
             const speed = 1; // Speed of the sinusoidal motion
-            const hSpeed = 3; // Speed of the sinusoidal motion
-            const initialXPosition = (containerWidth / 5) * (index % 5) - buttonWidth/2;
+            const hSpeed = 50; // Speed of the horizontal
+            const initialXPosition = (containerWidth / 5) * (index % 5 - 4) - buttonWidth/2;
 
             // Initial position of the button
             button.style.left = initialXPosition + 'px';
@@ -338,13 +338,8 @@
                 const y = amplitude * Math.sin(speed * time + index * Math.PI / 2);
 
                 // Calculate the new position of the button
-                let newPositionX = initialXPosition + x;
+                let newPositionX = (initialXPosition + x) % containerWidth;
                 let newPositionY = (containerHeight - buttonHeight) / 2 + y - buttonHeight/2;
-
-                // Check if the button is outside the container
-                if (newPositionX > containerWidth) {
-                    newPositionX = -buttonWidth; // Move the button to the beginning of the container
-                }
 
                 // Set the new position of the button
                 button.style.left = newPositionX + 'px';
