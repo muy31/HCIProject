@@ -58,16 +58,19 @@
 
         #results {
             width: 90%;
-            height: 100px;
+            max-height: 50%;
             overflow: hidden;
             position: relative;
             margin-top: 5%;
             padding: 20px;
-            text-align: center;
             flex-grow: 1;
+            border-width: 2px;
+            border-color: black;
+            border-style: dashed;
         }
 
         .result-button {
+            position: absolute;
             margin: 5%;
             background-color: #007bff;
             color: white;
@@ -76,6 +79,8 @@
             border-radius: 50%;
             outline: none;
             text-align: center;
+            top: 50%;
+            transform: translateY(-50%);
         }
 
         #exit-button {
@@ -105,7 +110,10 @@
 
         <div id="sun-back">
 
-            <canvas id="sun-canvas" width="120" height="120"></canvas>
+            <a href="">
+                <canvas id="sun-canvas" width="120" height="120"></canvas>
+            </a>
+            
             
             <script>
                 //The sun drawing
@@ -152,9 +160,6 @@
 
                     const pupil1XY = calculatePupilPosition(x - eyeOffsetX, y + eyeOffsetY, 0, 0, innerRadius / 4.5, innerRadius / 3.5);
                     const pupil2XY = calculatePupilPosition(x + eyeOffsetX, y + eyeOffsetY, 0, 0, innerRadius / 4.5, innerRadius / 3.5);
-
-                    console.log(pupil1XY);
-                    console.log(pupil2XY);
 
                     ctx.fillStyle = "white";
                     ctx.beginPath();
@@ -222,6 +227,7 @@
         </div>
 
         <div id="results"></div>
+
     </div>
 
     <script>
@@ -283,6 +289,8 @@
         function displayResults(sampleResults) {
             const resultsContainer = document.getElementById('results');
             resultsContainer.innerHTML = ''; // Clear previous results
+            let index = 0;
+            let result_len = Object.keys(sampleResults).length;
 
             Object.keys(sampleResults).forEach(result => {
                 const button = document.createElement('button');
@@ -297,7 +305,57 @@
                 button.classList.add('result-button');
                 button.textContent = result;
                 resultsContainer.appendChild(button);
+
+                //const startx = (resultsContainer.offsetWidth / (result_len + 2) * (index + 1)) + 'px';
+
+                //console.log(resultsContainer.offsetWidth);
+
+                //button.style.left = startx;
+
+                //Animate
+                animateButton(button, index);
+                index++;
             });
+        }
+
+        function animateButton(button, index) {
+            const containerWidth = document.getElementById('results').offsetWidth;
+            const containerHeight = document.getElementById('results').offsetHeight;
+            const buttonWidth = button.offsetWidth;
+            const buttonHeight = button.offsetHeight;
+            const amplitude = 50; // Amplitude of the sinusoidal motion
+            const speed = 1; // Speed of the sinusoidal motion
+            const hSpeed = 3; // Speed of the sinusoidal motion
+            const initialXPosition = (containerWidth / 5) * (index % 5) - buttonWidth/2;
+
+            // Initial position of the button
+            button.style.left = initialXPosition + 'px';
+            button.style.top = (containerHeight - buttonHeight) / 2 + 'px';
+
+            function move() {
+                const time = performance.now() * 0.001;
+                const x = hSpeed * time + index;// Adjust phase for each button
+                const y = amplitude * Math.sin(speed * time + index * Math.PI / 2);
+
+                // Calculate the new position of the button
+                let newPositionX = initialXPosition + x;
+                let newPositionY = (containerHeight - buttonHeight) / 2 + y - buttonHeight/2;
+
+                // Check if the button is outside the container
+                if (newPositionX > containerWidth) {
+                    newPositionX = -buttonWidth; // Move the button to the beginning of the container
+                }
+
+                // Set the new position of the button
+                button.style.left = newPositionX + 'px';
+                button.style.top = newPositionY + 'px';
+
+                // Request next animation frame
+                requestAnimationFrame(move);
+            }
+
+            // Start the animation loop
+            move();
         }
 
         // Event listener for search bar
