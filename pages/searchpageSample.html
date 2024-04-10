@@ -338,7 +338,7 @@
                 const y = amplitude * Math.sin(speed * time + index * Math.PI / 2);
 
                 // Calculate the new position of the button
-                let newPositionX = (initialXPosition + x) % containerWidth;
+                let newPositionX = (initialXPosition + x) % containerWidth - buttonWidth/2;
                 let newPositionY = (containerHeight - buttonHeight) / 2 + y - buttonHeight/2;
 
                 // Set the new position of the button
