@@ -102,10 +102,8 @@
 
 <div class="container">
   <div class="colorful-box">
-    <p><strong>Anna Winthrop wants to:</strong><br>
-    Paint watercolor landscapes with a new friend<br>
-    Interested in this quest?</p>
-    <p>Email Anna at <a href="mailto:anna.winthrop@yale.edu">anna.winthrop@yale.edu</a></p>
+    <p id="name-phrase"><br></p>
+    <p id="contact-phrase">Email Anna at <a id="email" href="mailto:anna.winthrop@yale.edu"></a></p>
   </div>
   <div class="button-container">
     <button id="back" class="button">Raise left hand to go back</button>
@@ -132,6 +130,33 @@
     document.getElementById("forward").addEventListener("click", () => {
         document.getElementById("forward").innerHTML = "LIKED!";
     });
+
+
+    function updateQuestInvite() {
+        const quest = getQuestData();
+
+        const namePhrase = "<strong> $() </strong>";
+
+        document.getElementById("name-phrase").innerHTML = quest.pseudonym + " wants to:<br>" + quest.description;
+        const firstName = quest.pseudonym.split(" ")[0];
+        document.getElementById("email-phrase").innerHTML = "Email " + firstName + " at";
+        document.getElementById("email").innerHTML = quest.email;
+    }
+    
+    function getQuestData() {
+        const quest = {
+            pseudonym: "Anna Winthrop",
+            questName: "Watercolor Painting",
+            description: "Paint watercolor landscapes with a new friend <br> Interested in this quest?",
+            email: "anna.winthrop@yale.edu",
+            likes: 10,
+            time: "3:30 PM",
+            location: "Branford Common Room",
+        }
+        return quest;
+    }
+
+    updateQuestInvite();
 
 </script>
 
