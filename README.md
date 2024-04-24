@@ -1,20 +1,45 @@
-# HCIProject
+# CPSC 484 Project - Group 18
 
-Tasks to complete:
-1. Create index.html file as the root page (home/first screen)
-2. Add other html files within a directory called pages (referring to different screens)
-3. Implement TV screen forms of input
+This repository contains the code for CPSC 484 (Introduction to Human-Computer Interaction) project.
 
-GitHub useful commands:
+## Dependencies
 
-- git clone [https_link]: clones the repository to your local drive (if on Windows, make sure you're not in a OneDrive managed folder)
-- git pull: "re-clones" the repository to your local drive
-- git branch : shows which branch you are currently in (default is main)
-- git branch [name]: creates a new branch for which you are working in your local repo
-- git checkout [branch_name]: switches over to a new branch to work your local repo (Try to keep all of your individual changes in one branch to make merging easy)
+No dependencies is required for our project. 
 
-- git status: keeps track of your changes between the branch you're working in and your local repository
-- git add --all: adds all changes to be ready for commit
-- git commit: commits all changes with a message in preparation for a final push
-- git push: updates online repository within current branch
+## Overview
 
+This project aims to create a platform where individuals can discover and connect with others who share similar interests. By fostering a community-driven environment, the project makes it easier for people to find and interact with potential friends or collaborators, overcoming common barriers such as hesitation or uncertainty about reaching out.
+
+## Problem Space
+
+In today’s digital age, while social connections are more possible than ever, many still find it challenging to connect with new people who share specific interests. This project addresses the problem of individuals wanting to connect with others with a shared affinity but are unsure how to or are afraid to make the first move.
+
+##  Tasks Addressed
+
+- Learn about community interests
+The platform allows users to explore various interest groups, seeing what hobbies or activities are currently trending within the community.
+- Connect with people of similar interest
+ Users can join groups or initiate conversations based on shared interests, facilitating a connection that might not have been made otherwise.
+
+## Constraints
+
+Our project is only tested on Google Chrome; and Javascript must be enabled for proper execution of our code.
+
+## Collaboration
+
+ 1. Aya Kasim ahk54
+	 - Made Propose Quest Page
+	 - Organized meeting times
+	 - Assisted with the README
+	 - Managed goal-setting and project progression
+    
+2. Muyi Aghedo mna28
+	-  Implemented search feature
+	- Implemented database and quest proposal functionality
+    
+
+3. Rilyn Han rh884
+	- Wrote ReadMe
+    
+4. Pranava Dhar pd525
+	- Implemented sensor code
