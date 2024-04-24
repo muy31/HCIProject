@@ -73,36 +73,40 @@ body {
 </style>
 </head>
 <body>
-<div class="face">
-    <div class="eyes">
-        <div class="eye"></div>
-        <div class="eye"></div>
+    <div class="face">
+        <div class="eyes">
+            <div class="eye"></div>
+            <div class="eye"></div>
+        </div>
+
+        <div class="eyebrow left"></div>
+        <div class="eyebrow right"></div>
     </div>
 
-    <div class="eyebrow left"></div>
-    <div class="eyebrow right"></div>
-</div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 
-<script>
-    document.querySelector("body").addEventListener("mousemove", eyeball);
+    <script src="assets/scripts/useSheets.js"></script>
 
-    function eyeball(event) {
-        'use strict';
-        var eye = document.querySelectorAll(".eye");
-        eye.forEach(function (eye) {
-            let x = (eye.getBoundingClientRect().left) + (eye.clientWidth / 2)
-            let y = (eye.getBoundingClientRect().top) + (eye.clientHeight / 2);
-            let radian = Math.atan2(event.pageX - x, event.pageY - y);
-            let rot = (radian * (180 / Math.PI) * -1) + 270;
-            eye.style.transform  = "rotate("+ rot +"deg)"
-        })
-    }
+    <script>
+        document.querySelector("body").addEventListener("mousemove", eyeball);
 
-    document.addEventListener("click", () => {
-        console.log("Page clicked! Transition");
-        document.location.href = "pages/homePage.html";
-    });
+        function eyeball(event) {
+            'use strict';
+            var eye = document.querySelectorAll(".eye");
+            eye.forEach(function (eye) {
+                let x = (eye.getBoundingClientRect().left) + (eye.clientWidth / 2)
+                let y = (eye.getBoundingClientRect().top) + (eye.clientHeight / 2);
+                let radian = Math.atan2(event.pageX - x, event.pageY - y);
+                let rot = (radian * (180 / Math.PI) * -1) + 270;
+                eye.style.transform = "rotate(" + rot + "deg)"
+            })
+        }
 
-</script>
+        document.addEventListener("click", () => {
+            console.log("Page clicked! Transition");
+            document.location.href = "pages/homePage.html";
+        });
+
+    </script>
 </body>
 </html>

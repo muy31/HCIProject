@@ -107,7 +107,7 @@
         
         <div id="sun-back">
 
-            <a href="">
+            <a href="QuestHover.html">
                 <canvas id="sun-canvas" width="120" height="120"></canvas>
             </a>
                 
@@ -221,9 +221,9 @@
             const buttonWidth = button.offsetWidth;
             const buttonHeight = button.offsetHeight;
             const amplitude = 50; // Amplitude of the sinusoidal motion
-            const speed = 1; // Speed of the sinusoidal motion
-            const hSpeed = 50; // Speed of the horizontal
-            const initialXPosition = (containerWidth / 5) * (index % 5 - 4) - buttonWidth/2;
+            const speed = 0.5; // Speed of the sinusoidal motion
+            const hSpeed = 0; // Speed of the horizontal
+            const initialXPosition = (containerWidth / 5) * (index % 5);
 
             // Initial position of the button
             button.style.left = initialXPosition + 'px';

@@ -103,7 +103,7 @@
 <div class="container">
   <div class="colorful-box">
     <p id="name-phrase"><br></p>
-    <p id="contact-phrase">Email Anna at <a id="email" href="mailto:anna.winthrop@yale.edu"></a></p>
+    <p id="contact-phrase">Email Anna at <a href="mailto:anna.winthrop@yale.edu"><p id="email"></p></a></p>
   </div>
   <div class="button-container">
     <button id="back" class="button">Raise left hand to go back</button>
@@ -122,24 +122,28 @@
 </div>
 
 <script>
+    const quest = getQuestData();
 
     document.getElementById("back").addEventListener("click", () => {
         document.location.href = "questList.html";
     });
 
     document.getElementById("forward").addEventListener("click", () => {
-        document.getElementById("forward").innerHTML = "LIKED!";
+        const thisQ = document.getElementById("forward");
+
+        if (thisQ.innerHTML == "LIKED!") {
+            quest.likes++;
+            console.log("Added 1 to likes!");
+        }
+
+        thisQ.innerHTML = "LIKED!";
     });
 
 
     function updateQuestInvite() {
-        const quest = getQuestData();
-
-        const namePhrase = "<strong> $() </strong>";
-
         document.getElementById("name-phrase").innerHTML = quest.pseudonym + " wants to:<br>" + quest.description;
         const firstName = quest.pseudonym.split(" ")[0];
-        document.getElementById("email-phrase").innerHTML = "Email " + firstName + " at";
+        document.getElementById("contact-phrase").innerHTML = "Email " + firstName + " at: ";
         document.getElementById("email").innerHTML = quest.email;
     }
     

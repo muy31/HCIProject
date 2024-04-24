@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+
+        body {
+            display: flex;
+            justify-content: center;
+            background-color: lightblue;
+            font-size: 20px;
+            border-color: red;
+            border-width: 2px;
+            border-style: dashed;
+            height: fit-content;
+        }
+
+        form {
+            display: flow;
+            justify-content: center;
+            background-color: white;
+            padding: 20px;
+            border: 2px dashed red;
+            width: 60%;
+        }
+
+        .formLabel {
+            font-weight: 400;
+            font-size: 25px;
+            margin-bottom: 0px;
+            padding-bottom: 10px;
+        }
+
+        .formInput {
+            margin-bottom: 10px;
+            width: 95%;
+            padding: 1%;
+        }
+
+        #desc {
+            height: fit-content;
+            flex-direction: column;
+            flex-wrap: wrap;
+            min-height: 10%;
+        }
+
+        .dateInput {
+            font-size: 15px;
+            padding-left: 1%;
+            padding-right: 1%;
+            height: 10%;
+            margin-bottom: 15px;
+        }
+
+        .timeInput {
+            margin-bottom: 15px;
+            padding-left: 1%;
+            padding-right: 1%;
+            border-width: 0px;
+        }
+
+        #submit-button {
+            border-width: 0px;
+            border-radius: 5%;
+            font-size: inherit;
+            padding-left: 2%;
+            padding-right: 2%;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <form id="forma">
+        <label class="formLabel" for="category">Quest Category</label><br>
+        <input class="formInput" type="text" id="category" name="category"><br>
+
+        <label class="formLabel" for="qname">Name for Your Quest</label><br>
+        <input class="formInput" type="text" id="qname" name="qname"><br>
+
+        <label class="formLabel" for="desc">A Quick Description</label><br>
+        <textarea class="formInput" type="text" id="desc" name="desc"></textarea><br>
+
+        <label class="formLabel" for="loca">Location</label><br>
+        <input class="formInput" type="text" id="loca" name="loca"><br>
+
+        <label class="formLabel" for="dte">Date of Quest</label><br>
+        <input class="dateInput" type="date" id="dte" name="dte"><br>
+
+        <label class="formLabel" for="tme">Time of Quest</label><br>
+        <input class="timeInput" type="time" id="tme" name="tme"><br>
+
+        <input id="submit-button" type="submit" value="Submit">
+
+    </form>
+
+    <script src="../assets/scripts/databaseConfig.js"></script>
+
+    <script>
+        //Globals
+        const submit = document.getElementById("submit-button");
+        const form = document.getElementById("forma");
+    </script>
+
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
+        import { getDatabase, ref, set, get, push } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js";
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Reference to Firebase Realtime Database
+        const database = getDatabase();
+
+        // Function to handle form submission
+        function submitForm(formDataObject) {
+
+            //Update questCount (careful about async processes)
+            let qC;
+            const locationCount = ref(database, 'quests/count');
+
+            get(locationCount).then((snapshot) => {
+                if (snapshot.exists()) {
+                    qC = parseInt(snapshot.val());
+                } else {
+                    qC = 0;
+                }
+
+                if (qC == undefined) {
+                    qC = 0;
+                }
+
+                set(locationCount, parseInt(qC + 1)).then(() => {
+                    console.log("Successfully updated firebase questCount");
+                    // You can add any success message or redirection logic here
+                }).catch(
+                    error => {
+                        console.error("Error updating quest count in Firebase: ", error);
+                    }
+                );
+
+                const location = ref(database, 'quests/' + qC);
+
+                // Push form data to Firebase
+                set(location, formDataObject)
+                    .then(() => {
+                        console.log("Data successfully sent to Firebase");
+                        // You can add any success message or redirection logic here
+                    })
+                    .catch(error => {
+                        console.error("Error sending data to Firebase: ", error);
+                    });
+
+            }).catch((error) => {
+                console.error("Error retrieving data: ", error);
+            });
+        }
+
+        // Add submit event listener to the form
+        const form = document.getElementById('forma');
+        form.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent default form submission behavior
+
+            const formData = new FormData(form);
+            const fD = Object.fromEntries(formData);
+
+            const questData = {
+                pseudonym: "Anonymous",
+                questTopic: fD.category,
+                questName: fD.qname,
+                description: fD.desc,
+                email: "No email provided",
+                likes: 0,
+                time: fD.tme,
+                location: fD.loca,
+            }
+
+            if (fD.category == "" || fD.qname == "" || fD.desc == "" || fD.tme == "" || fD.loca == "") {
+                alert("Please fill out all fields and submit again!");
+            } else {
+                submitForm(questData);
+            } 
+        });
+
+    </script>
+
+</body>
+
+
+
