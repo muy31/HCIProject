@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Page</title>
-
+    <script src="../assets/scripts/timer.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,6 +13,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            background-color: lightskyblue;
         }
 
         #lower-body {
@@ -32,6 +33,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background-color: lightskyblue;
         }
 
         #search-bar {
@@ -61,8 +63,9 @@
             max-height: 50%;
             overflow: hidden;
             position: relative;
-            margin-top: 5%;
-            padding: 20px;
+            padding-top: 50%;
+            padding-left: 5%;
+            padding-right: 5%;
             flex-grow: 1;
         }
 
@@ -70,7 +73,7 @@
             position: absolute;
             margin: 5%;
             background-color: #007bff;
-            color: white;
+            color: black;
             border: none;
             cursor: pointer;
             border-radius: 50%;
@@ -78,6 +81,7 @@
             text-align: center;
             top: 50%;
             transform: translateY(-50%);
+            font-weight: bold;
         }
 
         #exit-button {
@@ -89,6 +93,7 @@
             cursor: pointer;
             border-radius: 5px;
             outline: none;
+            font-size: 20px;
         }
 
         #sun-back {
@@ -128,102 +133,187 @@
 
     </div>
 
-    <script>
-        // Sample results
+    <script src="../assets/scripts/priorityQueue.js"></script>
+    <script src="../assets/scripts/searching.js"></script>
+    <script src="../assets/scripts/databaseConfig.js"></script>
+    <script type="module">
 
-        sampleResults = {
-            "Sculptures": 5,
-            "Violin": 10,
-            "Afrobeats": 60,
-            "Kenya": 15,
-            "Skiiing" : 15
-            };
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
+        import { getDatabase, ref, get} from "https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js";
 
-        /*
-        var fs = require("fs");
-        fs.readFile("./searchDatabase.txt", function (text) {
-            const samplePossibleResults = text.split("\n");
+        const app = initializeApp(firebaseConfig);
+
+        const database = getDatabase();
+
+        async function searchForValue(value, numResults) {
+            //Get count to search
+            let qC;
+            let useRD = true;
+            const locationCount = ref(database, 'quests/count');
+            if (localStorage.getItem('count') == null) {
+                localStorage.setItem('count', 0);
+            }
+
+            try {
+                const snapshot = await get(locationCount);
+
+                //Grab count
+                if (snapshot.exists()) {
+                    qC = parseInt(snapshot.val());
+                    if (qC == localStorage.getItem('count')) {
+                        useRD = false;
+                        //No need to access realtime database
+                        console.log("Local storage and realtime database appear to match, so will be searching via localStorage " + qC + " " + localStorage.getItem("count"));
+                    } else {
+                        console.log("Local storage differs from realtime database, so will be searching via database " + qC + " " + localStorage.getItem("count"));
+                    }
+                } else {
+                    qC = 0;
+                }
+
+                //Begin search
+                const foundRelatedQuests = new PriorityQueue((a, b) => b.score - a.score);
+
+                for (let i = 0; i < qC; i++) {
+                    //Get the target object
+                    let target;
+                    if (useRD) {
+                        const locationTarget = ref(database, 'quests/' + i);
+                        try {
+                            const snapshot = await get(locationTarget);
+                            if (snapshot.exists()) {
+                                target = snapshot.val();
+                                console.log(target);
+                                localStorage.setItem(String(i), serializeObject(target));
+                            } else {
+                                console.log("Quest does not exist at " + i);
+                                continue;
+                            }
+                        } catch (error) {
+                            console.error("Error accessing index " + i + " of realtime database ", error);
+                            continue;
+                        }
+                    } else {
+                        target = deserializeString(localStorage.getItem(String(i)));
+                    }
+
+                    //Perform search criteria on found target
+                    const score = flexSearchQuestObject(value, target);
+                    foundRelatedQuests.enqueue({ target, score });
+
+                    if (foundRelatedQuests.size() > numResults) {
+                        foundRelatedQuests.dequeue();
+                    }
+                }
+
+                console.log(foundRelatedQuests);
+
+                const closest = [];
+                while (!foundRelatedQuests.isEmpty()) {
+                    const item = foundRelatedQuests.dequeue(); // Reverse the order to maintain original order
+                    closest.push(item.target);
+                }
+
+                //Update local for future searches
+                localStorage.setItem('count', qC);
+
+                return closest;
+
+            } catch (error) {
+                console.error("Error finding quest count in firebase: ", error);
+                return [];
+            }
+        }
+
+        function search() {
+            const input = document.getElementById('search-bar').value;
+            let newResults = searchForValue(input, 5).then((data) => {
+                console.log(data);
+                displayResults(data);
+            });
+        }
+
+        // Event listener for search bar
+        document.getElementById('search-bar').addEventListener('input', (event) => {
+            search();
         });
 
-        console.log(samplePossibleResults);
+        search();
 
-        function searchFor() {
-            const input = document.getElementById('search-bar').value;
-            console.log(input);
+    </script>
 
-            topFiveResults = {};
-
-            for (let i = 0; i < samplePossibleResults.length; i++) {
-
-                const worst_key = compareValueKey(topFiveResults, function (a, b) { return topFiveResults[a] > topFiveResults[b] ? a : b });
-
-                while (Object.keys(topFiveResults).length > 5) {
-                    //Trim off worst one
-                    delete topFiveResults[worst_key];
-                    worst_key = compareValueKey(topFiveResults, function (a, b) { return topFiveResults[a] > topFiveResults[b] ? a : b });
-                }
-
-                const value = Math.abs(input.localeCompare(samplePossibleResults[i]));
-                if (value < topFiveResults[worst_key]) {
-                    topFiveResults[samplePossibleResults[i]] = value;
-                    delete topFiveResults[worst_key];
-                }
-            }
-        }
-
-        function compareValueKey(dict, func) {
-            highestKey = null;
-            for (const key of Object.keys(dict)) {
-                if (highestKey == null) {
-                    highestKey = key;
-                } else {
-                    highestKey = func(key, highestKey);
-                }
-            }
-        }
-        */
+    <script>
 
         // Function to display results as buttons
         function displayResults(sampleResults) {
             const resultsContainer = document.getElementById('results');
             resultsContainer.innerHTML = ''; // Clear previous results
             let index = 0;
-            let result_len = Object.keys(sampleResults).length;
 
-            Object.keys(sampleResults).forEach(result => {
+            sampleResults.forEach(result => {
                 const button = document.createElement('button');
 
-                //Add button metadata here (like links and stuff)
+                //Content
+                button.style.fontSize = '18px';
+                button.innerHTML = result.questName;
 
-                const randomColor = '#' + Math.random().toString(16).slice(-6);
-                const buttonSize = (Math.log2(sampleResults[result] + 1) * 25 + 1) + 'px';
-                button.style.backgroundColor = randomColor;
+                //Size
+                const buttonSize = '300px';
                 button.style.width = buttonSize;
                 button.style.height = buttonSize;
-                button.classList.add('result-button');
-                button.textContent = result;
-                resultsContainer.appendChild(button);
 
-                button.addEventListener('click', () => {
+                //Color
+                const randomValue = Math.random();
+                const randomColor = '#' + randomValue.toString(16).slice(-6);
+                button.style.backgroundColor = randomColor;
+
+                //Flags
+                const timer = { timeLeft: 2, on: false, orig: result};
+
+                //Button callbacks
+                button.addEventListener('mouseover', () => {
                     // Handle exit action
-                    document.location.href = "specificQuestList.html";
+                    let darkerValue = randomValue - 0.2;
+                    darkerValue = darkerValue < 0 ? 0 : darkerValue;
+
+                    let darkerColor = '#' + darkerValue.toString(16).slice(-6);
+
+                    button.style.backgroundColor = darkerColor;
+                    button.style.fontSize = '30px';
+
+                    timer.on = true;
+                    localStorage.setItem("currentQuest", serializeObject(timer.orig));
+                    continueTimer(timer, button, "specificQuestList.html");
                 });
 
+                button.addEventListener('mouseleave', () => {
+                    button.style.backgroundColor = randomColor;
+                    button.style.fontSize = '18px';
+                    button.innerHTML = timer.orig.questName;
+                    timer.timeLeft = 2;
+                    timer.on = false;
+                });
+
+                //Render
+                button.classList.add('result-button');
+                resultsContainer.appendChild(button);
+
+
                 //Animate
-                animateButton(button, index);
+                animateButton(button, index, sampleResults.length);
                 index++;
             });
         }
 
-        function animateButton(button, index) {
+        function animateButton(button, index, total) {
             const containerWidth = document.getElementById('results').offsetWidth;
             const containerHeight = document.getElementById('results').offsetHeight;
             const buttonWidth = button.offsetWidth;
             const buttonHeight = button.offsetHeight;
             const amplitude = 50; // Amplitude of the sinusoidal motion
-            const speed = 0.5; // Speed of the sinusoidal motion
-            const hSpeed = 0; // Speed of the horizontal
-            const initialXPosition = (containerWidth / 5) * (index % 5);
+            const speed = 0.2; // Speed of the sinusoidal motion
+            const hSpeed = 2; // Speed of the horizontal
+            const initialXPosition = (containerWidth / total + 1) * (index % total);
 
             // Initial position of the button
             button.style.left = initialXPosition + 'px';
@@ -250,17 +340,23 @@
             move();
         }
 
-        // Event listener for search bar
-        document.getElementById('search-bar').addEventListener('input', displayResults);
+        //Exit callbacks
+        const exit = document.getElementById("exit-button");
+        const exitTimer = { timeLeft: 3, on: false };
 
-        // Initial display of results
-        displayResults(sampleResults);
-
-        // Event listener for exit button
-        document.getElementById('exit-button').addEventListener('click', () => {
-            // Handle exit action
-            document.location.href = "QuestHover.html";
+        exit.addEventListener('mouseover', () => {
+            exit.style.backgroundColor = 'darkRed';
+            exitTimer.on = true;
+            continueTimer(exitTimer, exit, "homePage.html");
         });
+
+        exit.addEventListener('mouseleave', () => {
+            exit.style.backgroundColor = "red";
+            exit.innerHTML = "Exit!";
+            exitTimer.timeLeft = 3;
+            exitTimer.on = false;
+        });
+
     </script>
 </body>
 </html>
