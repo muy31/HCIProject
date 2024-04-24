@@ -5,29 +5,175 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quest List Interface</title>
+<script src="../assets/scripts/timer.js"></script>
+<script src="../assets/scripts/searching.js"></script>
 <link rel="stylesheet" href="../assets/stylesheets/questListStyles.css">
 </head>
 
 <body>
     <div class="container">
-        <a href="QuestHover.html" class="quest" id="exit">Exit!</a>
-        <div class="quest" id="painting-people">Rock Climbing<span>50 quests</span></div>
-        <div class="quest" id="fingerpainting">Fingerpainting<span>5 quests</span></div>
-        <div class="quest" id="childrens-painting">Yoga Class<span>15 quests</span></div>
+        <div id="exit">Exit!</div>
 
-        <a href="QuestInvite.html"><div class="quest" id="learning-watercolor">Learning Watercolor<span>10 quests</span></div></a>
-
-        <div class="quest" id="learning-sketching">Movie Night<span>3 quests</span></div>
         <div class="sun-container">
-            <a href="QuestHover.html">
-                <canvas id="sun-canvas" width="120" height="120"></canvas>
-            </a>
-            <div class="join-message">Want to like or accept a quest?<br>Hover over a quest for two seconds</div>
+            <canvas id="sun-canvas" width="120" height="120"></canvas>
+            <div class="join-message">Want to view, like, or accept a quest?<br>Hover over a quest for two seconds</div>
         </div>
-
     </div>
 
     <script src="../assets/scripts/canvasSun.js"></script>
+
+    <script>
+
+        //Exit callbacks
+        const exit = document.getElementById("exit");
+        const exitTimer = { timeLeft: 3, on: false };
+
+        exit.addEventListener('mouseover', () => {
+            exit.style.backgroundColor = 'darkRed';
+            exitTimer.on = true;
+            continueTimer(exitTimer, exit, "homePage.html");
+        });
+
+        exit.addEventListener('mouseleave', () => {
+            exit.style.backgroundColor = "red";
+            exit.innerHTML = "Exit!";
+            exitTimer.timeLeft = 3;
+            exitTimer.on = false;
+        });
+
+    </script>
+
+    <script src="../assets/scripts/databaseConfig.js"></script>
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js";
+
+        const app = initializeApp(firebaseConfig);
+
+        const database = getDatabase();
+
+        async function getRandomQuests(numResults) {
+            //Get count to search
+            let qC;
+            let useRD = true;
+            const locationCount = ref(database, 'quests/count');
+            if (localStorage.getItem('count') == null) {
+                localStorage.setItem('count', 0);
+            }
+
+            try {
+                const snapshot = await get(locationCount);
+
+                //Grab count
+                if (snapshot.exists()) {
+                    qC = parseInt(snapshot.val());
+                    if (qC == localStorage.getItem('count')) {
+                        useRD = false;
+                        //No need to access realtime database
+                        console.log("Local storage and realtime database appear to match, so will be searching via localStorage " + qC + " " + localStorage.getItem("count"));
+                    } else {
+                        console.log("Local storage differs from realtime database, so will be searching via database " + qC + " " + localStorage.getItem("count"));
+                    }
+                } else {
+                    qC = 0;
+                }
+
+                //Begin search
+                const foundRelatedQuests = [];
+
+                while (foundRelatedQuests.length < numResults) {
+                    const i = Math.floor(Math.random() * qC);
+
+                    let target;
+                    if (useRD) {
+                        const locationTarget = ref(database, 'quests/' + i);
+                        try {
+                            const snapshot = await get(locationTarget);
+                            if (snapshot.exists()) {
+                                target = snapshot.val();
+                                console.log(target);
+                                localStorage.setItem(String(i), serializeObject(target));
+                            } else {
+                                console.log("Quest does not exist at " + i);
+                                continue;
+                            }
+                        } catch (error) {
+                            console.error("Error accessing index " + i + " of realtime database ", error);
+                            continue;
+                        }
+                    } else {
+                        target = deserializeString(localStorage.getItem(String(i)));
+                    }
+
+                    foundRelatedQuests.push(target);
+                }
+
+                //Update local for future searches
+                localStorage.setItem('count', qC);
+
+                return foundRelatedQuests;
+
+            } catch (error) {
+                console.error("Error finding quest count in firebase: ", error);
+                return [];
+            }
+        }
+
+        function loadNewQuests(num) {
+
+            const qContainer = document.getElementsByClassName("container")[0];
+
+            getRandomQuests(num).then((quests) => {
+                quests.forEach((quest) => {
+
+                    console.log(quest);
+
+                    //Instantiation
+                    const qCircle = document.createElement("div");
+                    qCircle.classList.add('quest');
+
+                    //Content
+                    qCircle.innerHTML = quest.questName + "<span>" + quest.likes + " likes</span>";
+
+                    //Style
+                    const randomValue = Math.random();
+                    const randomColor = '#' + randomValue.toString(16).slice(-6);
+                    qCircle.style.backgroundColor = randomColor;
+
+                    //Render
+                    qContainer.appendChild(qCircle);
+
+                    //Callbacks
+                    const timer = { timeLeft: 2, on: false };
+
+                    qCircle.addEventListener('mouseover', () => {
+                        // Handle exit action
+                        let darkerValue = randomValue - 0.2;
+                        darkerValue = darkerValue < 0 ? 0 : darkerValue;
+
+                        let darkerColor = '#' + darkerValue.toString(16).slice(-6);
+
+                        qCircle.style.backgroundColor = darkerColor;
+                        timer.on = true;
+                        localStorage.setItem("currentQuest", serializeObject(quest));
+                        continueTimer(timer, qCircle, "QuestInvite.html");
+                    });
+
+                    qCircle.addEventListener('mouseleave', () => {
+                        qCircle.style.backgroundColor = randomColor;
+                        qCircle.innerHTML = quest.questName + "<span>" + quest.likes + " likes</span>";
+                        timer.timeLeft = 2;
+                        timer.on = false;
+                    });
+
+                });
+            });
+        }
+
+        loadNewQuests(5);
+
+    </script>
 
 </body>
 </html>

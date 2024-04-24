@@ -2,8 +2,6 @@ function continueTimer(timerDetails, textBox, navigationUrl) {
     const downloadTimer = setInterval(function () {
         if (timerDetails.on) {
 
-            console.log(timerDetails.timeLeft);
-
             if (timerDetails.timeLeft <= 0) {
                 clearInterval(downloadTimer);
                 textBox.innerHTML = "😊";

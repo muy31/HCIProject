@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest Invitation</title>
+    <script src="../assets/scripts/timer.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff; /* white background */
+        }
+
+        .container {
+            text-align: center;
+            position: absolute; /* Needed for absolute positioning */
+        }
+
+        .colorful-box {
+            width: 200px;
+            height: 200px;
+            background-color: #87cefa; /* light sky blue */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative; /* Position for absolute circles */
+        }
+
+
+        #exit-button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+            outline: none;
+            position: absolute; /* Add this line */
+            top: 0px; /* Adjust top position */
+            left: 0px; /* Adjust left position */
+        }
+
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .circle1 {
+            top: 10vh;
+            left: 5vw;
+            background-color: #ffa07a;
+            width: 60px;
+            height: 60px;
+        }
+        /* light salmon */
+        .circle2 {
+            top: 20vh;
+            right: 10vw;
+            background-color: #90ee90;
+            width: 70px;
+            height: 70px;
+        }
+        /* light green */
+        .circle3 {
+            bottom: 30vh;
+            left: 15vw;
+            background-color: #ff69b4;
+            width: 50px;
+            height: 50px;
+        }
+        /* hot pink */
+        .circle4 {
+            bottom: 15vh;
+            right: 5vw;
+            background-color: #87cefa;
+            width: 80px;
+            height: 80px;
+        }
+        /* light sky blue */
+        .circle5 {
+            top: 80vh;
+            left: 20vw;
+            background-color: #f0e68c;
+            width: 90px;
+            height: 90px;
+        }
+        /* khaki */
+        .circle6 {
+            top: 20vh;
+            left: 35vw;
+            background-color: #dda0dd;
+            width: 70px;
+            height: 70px;
+        }
+        /* plum */
+        .circle7 {
+            bottom: 20vh;
+            right: 15vw;
+            background-color: #00fa9a;
+            width: 60px;
+            height: 60px;
+        }
+        /* medium spring green */
+        .circle8 {
+            top: 50vh;
+            left: 20vw;
+            background-color: #ff6347;
+            width: 40px;
+            height: 40px;
+        }
+        /* tomato */
+        .circle9 {
+            bottom: 5vh;
+            right: 25vw;
+            background-color: #4169e1;
+            width: 50px;
+            height: 50px;
+        }
+        /* royal blue */
+        .circle10 {
+            top: 30vh;
+            left: 10vw;
+            background-color: #20b2aa;
+            width: 80px;
+            height: 80px;
+        }
+        /* light sea green */
+        .circle11 {
+            bottom: 88vh;
+            right: 20vw;
+            background-color: #f4a460;
+            width: 60px;
+            height: 60px;
+        }
+        /* sandy brown */
+        .circle12 {
+            top: 70vh;
+            left: 30vw;
+            background-color: #d3d3d3;
+            width: 70px;
+            height: 70px;
+        }
+        /* light gray */
+        .circle13 {
+            bottom: 10vh;
+            right: 30vw;
+            background-color: #da70d6;
+            width: 90px;
+            height: 90px;
+        }
+        /* orchid */
+        .circle14 {
+            top: 45vh;
+            left: 5vw;
+            background-color: #32cd32;
+            width: 50px;
+            height: 50px;
+        }
+        /* lime green */
+        .circle15 {
+            bottom: 35vh;
+            right: 5vw;
+            background-color: #f08080;
+            width: 80px;
+            height: 80px;
+        }
+        /* light coral */
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        header {
+            background-color: white;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #button {
+            background-color: #4caf50; /* green */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+            font-size: 16px; /* Increased font size for both buttons */
+            width: 250px;
+        }
+
+        .like-button {
+            background-color: #ff69b4; /* hot pink */
+            color: white;
+            padding: 10px 20px; /* Same padding as the other button */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+            font-size: 16px; /* Increased font size for both buttons */
+        }
+
+        /* Custom style for the left arrow symbol */
+        .button::before {
+            margin-right: 5px;
+            font-weight: bold; /* Making the arrow symbol thicker */
+        }
+    </style>
+</head>
+<body>
+
+    <button id="exit-button">Exit!</button>
+
+    <div class="container">
+        <div class="colorful-box">
+        </div>
+        <div class="button-container">
+            <button id="button">Done? Hover over me to go back </button>
+
+        </div>
+    </div>
+
+    <!-- Circles -->
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
+    <div class="circle circle4"></div>
+    <div class="circle circle5"></div>
+    <div class="circle circle6"></div>
+    <div class="circle circle7"></div>
+    <div class="circle circle8"></div>
+    <div class="circle circle9"></div>
+    <div class="circle circle10"></div>
+    <div class="circle circle11"></div>
+    <div class="circle circle12"></div>
+    <div class="circle circle13"></div>
+    <div class="circle circle14"></div>
+    <div class="circle circle15"></div>
+
+    <script>
+
+        //Exit callbacks
+        const exit = document.getElementById("exit-button");
+        const exitTimer = { timeLeft: 3, on: false };
+
+        exit.addEventListener('mouseover', () => {
+            exit.style.backgroundColor = 'darkRed';
+            exitTimer.on = true;
+            continueTimer(exitTimer, exit, "homePage.html");
+        });
+
+        exit.addEventListener('mouseleave', () => {
+            exit.style.backgroundColor = "red";
+            exit.innerHTML = "Exit!";
+            exitTimer.timeLeft = 3;
+            exitTimer.on = false;
+        });
+
+        //Button callbacks
+        const back = document.getElementById("button");
+        const backTimer = { timeLeft: 3, on: false };
+
+        back.addEventListener('mouseover', () => {
+            back.style.backgroundColor = 'darkGreen';
+            backTimer.on = true;
+            continueTimer(backTimer, back, "QuestHover.html");
+        });
+
+        back.addEventListener('mouseleave', () => {
+            back.style.backgroundColor = "#4caf50";
+            back.innerHTML = "Done? Hover over me to go back";
+            backTimer.timeLeft = 3;
+            backTimer.on = false;
+        });
+
+    </script>
+
+</body>
+</html>
+

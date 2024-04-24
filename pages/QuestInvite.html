@@ -1,113 +1,180 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quest Invitation</title>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #ffffff; /* white background */
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest Invitation</title>
+    <script src="../assets/scripts/timer.js"></script>
+    <script src="../assets/scripts/searching.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff; /* white background */
+            font-size: 20px;
+        }
 
-  .container {
-    text-align: center;
-    position: relative; /* Needed for absolute positioning */
-  }
+        .container {
+            text-align: center;
+            position: relative; /* Needed for absolute positioning */
+        }
 
-  .colorful-box {
-    width: 300px;
-    height: 200px;
-    background-color: #ffd700; /* golden yellow */
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative; /* Position for absolute circles */
-  }
+        .colorful-box {
+            width: 300px;
+            height: 200px;
+            background-color: #ffd700; /* golden yellow */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative; /* Position for absolute circles */
+        }
 
-  .circle {
-    position: absolute;
-    border-radius: 50%;
-  }
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+        }
 
-  .circle1 { top: -70px; left: -70px; background-color: #ff69b4; width: 80px; height: 80px; } /* hot pink */
-  .circle2 { top: -30px; right: -50px; background-color: #00bfff; width: 60px; height: 60px; } /* deep sky blue */
-  .circle3 { bottom: -90px; left: -20px; background-color: #ffd700; width: 70px; height: 70px; } /* golden yellow */
-  .circle4 { bottom: -20px; right: -80px; background-color: #ff6347; width: 50px; height: 50px; } /* tomato */
-  .circle5 { top: 60px; left: -40px; background-color: #7cfc00; width: 40px; height: 40px; } /* lawn green */
-  .circle6 { top: -120px; left: 80px; background-color: #9932cc; width: 90px; height: 90px; } /* dark orchid */
-  .circle7 { bottom: 40px; right: -70px; background-color: #ffa500; width: 70px; height: 70px; } /* orange */
-  .circle8 { top: -90px; right: 70px; background-color: #4682b4; width: 60px; height: 60px; } /* steel blue */
-  .circle9 { bottom: -150px; left: 150px; background-color: #ff1493; width: 80px; height: 80px; } /* deep pink */
+        .circle1 {
+            top: -70px;
+            left: -70px;
+            background-color: #ff69b4;
+            width: 80px;
+            height: 80px;
+        }
+        /* hot pink */
+        .circle2 {
+            top: -30px;
+            right: -50px;
+            background-color: #00bfff;
+            width: 60px;
+            height: 60px;
+        }
+        /* deep sky blue */
+        .circle3 {
+            bottom: -90px;
+            left: -20px;
+            background-color: #ffd700;
+            width: 70px;
+            height: 70px;
+        }
+        /* golden yellow */
+        .circle4 {
+            bottom: -20px;
+            right: -80px;
+            background-color: #ff6347;
+            width: 50px;
+            height: 50px;
+        }
+        /* tomato */
+        .circle5 {
+            top: 60px;
+            left: -40px;
+            background-color: #7cfc00;
+            width: 40px;
+            height: 40px;
+        }
+        /* lawn green */
+        .circle6 {
+            top: -120px;
+            left: 80px;
+            background-color: #9932cc;
+            width: 90px;
+            height: 90px;
+        }
+        /* dark orchid */
+        .circle7 {
+            bottom: 40px;
+            right: -70px;
+            background-color: #ffa500;
+            width: 70px;
+            height: 70px;
+        }
+        /* orange */
+        .circle8 {
+            top: -90px;
+            right: 70px;
+            background-color: #4682b4;
+            width: 60px;
+            height: 60px;
+        }
+        /* steel blue */
+        .circle9 {
+            bottom: -150px;
+            left: 150px;
+            background-color: #ff1493;
+            width: 80px;
+            height: 80px;
+        }
+        /* deep pink */
 
-  .button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-  }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
 
-  .button {
-    background-color: #4caf50; /* green */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin: 5px;
-    font-size: 16px; /* Increased font size for both buttons */
-  }
+        .button {
+            background-color: #4caf50; /* green */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+            font-size: 16px; /* Increased font size for both buttons */
+            width: 200px;
+        }
 
-  .button:hover {
-    background-color: #45a049; /* darker green */
-  }
+            .button:hover {
+                background-color: #45a049; /* darker green */
+            }
 
-  .like-button {
-    background-color: #ff69b4; /* hot pink */
-    color: white;
-    padding: 10px 20px; /* Same padding as the other button */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin: 5px;
-    font-size: 16px; /* Increased font size for both buttons */
-  }
+        .like-button {
+            background-color: #ff69b4; /* hot pink */
+            color: white;
+            padding: 10px 20px; /* Same padding as the other button */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+            font-size: 16px; /* Increased font size for both buttons */
+            width: 200px;
+        }
 
-  .like-button:hover {
-    background-color: #ff5c9c; /* darker pink */
-  }
+            .like-button:hover {
+                background-color: #ff5c9c; /* darker pink */
+            }
 
-  /* Custom style for the left arrow symbol */
-  .button::before {
-    content: "\2190"; /* Unicode for left arrow */
-    margin-right: 5px;
-    font-weight: bold; /* Making the arrow symbol thicker */
-  }
-</style>
+        /* Custom style for the left arrow symbol */
+        .button::before {
+            content: "\2190"; /* Unicode for left arrow */
+            margin-right: 5px;
+            font-weight: bold; /* Making the arrow symbol thicker */
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
   <div class="colorful-box">
-    <p id="name-phrase"><br></p>
-    <p id="contact-phrase">Email Anna at <a href="mailto:anna.winthrop@yale.edu"><p id="email"></p></a></p>
+    <p id="name-phrase"></p>
+    <p id="contact-phrase"></p>
   </div>
   <div class="button-container">
-    <button id="back" class="button">Raise left hand to go back</button>
-    <button id="forward" class="like-button">&#10084; Raise right hand to Like</button>
+    <button id="back" class="button">Hover over here to go back</button>
+    <button id="forward" class="like-button">&#10084; Raise a hand to like</button>
   </div>
   <!-- Circles -->
   <div class="circle circle1"></div>
@@ -141,26 +208,32 @@
 
 
     function updateQuestInvite() {
-        document.getElementById("name-phrase").innerHTML = quest.pseudonym + " wants to:<br>" + quest.description;
+        document.getElementById("name-phrase").innerHTML = "<b>" + quest.pseudonym + "</b> wants to:<br>" + quest.description
+            + "<br> on <b>" + quest.date + "</b> @ <b>" + quest.time + " EST </b> in <br> <b>" + quest.location + "</b>";
         const firstName = quest.pseudonym.split(" ")[0];
-        document.getElementById("contact-phrase").innerHTML = "Email " + firstName + " at: ";
-        document.getElementById("email").innerHTML = quest.email;
+        document.getElementById("contact-phrase").innerHTML = "You might be able to contact " + firstName + " at: <br><b>" + quest.email + "</b>";
     }
     
     function getQuestData() {
-        const quest = {
-            pseudonym: "Anna Winthrop",
-            questName: "Watercolor Painting",
-            description: "Paint watercolor landscapes with a new friend <br> Interested in this quest?",
-            email: "anna.winthrop@yale.edu",
-            likes: 10,
-            time: "3:30 PM",
-            location: "Branford Common Room",
-        }
-        return quest;
+        return deserializeString(localStorage.getItem("currentQuest"));
     }
 
     updateQuestInvite();
+
+    //Exit callbacks
+    const exit = document.getElementById("back");
+    const exitTimer = { timeLeft: 3, on: false };
+
+    exit.addEventListener('mouseover', () => {
+        exitTimer.on = true;
+        continueTimer(exitTimer, exit, sessionStorage.getItem("previousPage"));
+    });
+
+    exit.addEventListener('mouseleave', () => {
+        exit.innerHTML = "Hover over here to go back";
+        exitTimer.timeLeft = 3;
+        exitTimer.on = false;
+    });
 
 </script>
 
