@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Introduction to Quests</title>
+    <link rel="stylesheet" href="../assets/stylesheets/cursor.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="../assets/scripts/cursor.js"></script>
     <style>
         body {
             margin: 0;
@@ -164,12 +167,11 @@
             passions, and hobbies with the community
         </p>
     </div>
-    <div id="circle-button">
+
+    <div class="but8" id="circle-button">
         <p class="circle-text">Hover your hand here to proceed</p>
-
-
-
     </div>
+
     <!-- Additional circles -->
     <div class="small-circle circle1"></div>
     <div class="small-circle circle2"></div>
@@ -188,12 +190,12 @@
 
         const timerDetails = { timeLeft: 2, on: false };
 
-        button.addEventListener('mouseover', () => {
+        button.addEventListener('handcursorHover', (event) => {
             timerDetails.on = true;
             continueTimer(timerDetails, button, "QuestHover.html");
         });
 
-        button.addEventListener('mouseleave', () => {
+        button.addEventListener('handCursorOut', (event) => {
             button.innerHTML = "Hover your hand here to proceed";
             timerDetails.timeLeft = 2;
             timerDetails.on = false;

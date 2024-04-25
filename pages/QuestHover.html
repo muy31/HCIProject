@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Questboard</title>
     <script src="../assets/scripts/timer.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="../assets/scripts/cursor.js"></script>
+    <link rel="stylesheet" href="../assets/stylesheets/cursor.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -96,6 +99,7 @@
 </head>
 
 <body>
+
     <header>
         <button id="exit-button">Exit!</button>
 
@@ -138,6 +142,7 @@
 
             const button = document.createElement('button');
             button.classList.add('hover-button');
+            button.classList.add('but8');
             container.prepend(button);
 
             //Button metadata
@@ -149,7 +154,7 @@
             const timer = { timeLeft: 2, on: false };
 
             //Button callbacks
-            button.addEventListener('mouseover', () => {
+            button.addEventListener('handcursorHover', () => {
                 // Handle exit action
                 let darkerValue = randomValue - 0.2;
                 darkerValue = darkerValue < 0 ? 0 : darkerValue;
@@ -161,7 +166,7 @@
                 continueTimer(timer, button, urls[i]);
             });
 
-            button.addEventListener('mouseleave', () => {
+            button.addEventListener('handCursorOut', () => {
                 button.style.backgroundColor = randomColor;
                 button.innerHTML = "";
                 timer.timeLeft = 2;
@@ -172,13 +177,13 @@
             const exit = document.getElementById("exit-button");
             const exitTimer = { timeLeft: 3, on: false };
 
-            exit.addEventListener('mouseover', () => {
+            exit.addEventListener('handcursorHover', () => {
                 exit.style.backgroundColor = 'darkRed';
                 exitTimer.on = true;
                 continueTimer(exitTimer, exit, "homePage.html");
             });
 
-            exit.addEventListener('mouseleave', () => {
+            exit.addEventListener('handcursorOut', () => {
                 exit.style.backgroundColor = "red";
                 exit.innerHTML = "Exit!";
                 exitTimer.timeLeft = 3;

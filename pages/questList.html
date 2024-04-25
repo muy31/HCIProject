@@ -2,20 +2,24 @@
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quest List Interface</title>
-<script src="../assets/scripts/timer.js"></script>
-<script src="../assets/scripts/searching.js"></script>
-<link rel="stylesheet" href="../assets/stylesheets/questListStyles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest List Interface</title>
+    <script src="../assets/scripts/timer.js"></script>
+    <script src="../assets/scripts/searching.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="../assets/stylesheets/questListStyles.css">
+    <link rel="stylesheet" href="../assets/stylesheets/cursor.css">
+    <script src="../assets/scripts/cursor.js"></script>
 </head>
 
 <body>
+
     <div class="container">
-        <div id="exit">Exit!</div>
+        <div id="exit" class="but8">Exit!</div>
 
         <div class="sun-container">
-            <canvas id="sun-canvas" width="120" height="120"></canvas>
+            <canvas class="but8" id="sun-canvas" width="120" height="120"></canvas>
             <div class="join-message">Want to view, like, or accept a quest?<br>Hover over a quest for two seconds</div>
         </div>
     </div>
@@ -28,13 +32,13 @@
         const exit = document.getElementById("exit");
         const exitTimer = { timeLeft: 3, on: false };
 
-        exit.addEventListener('mouseover', () => {
+        exit.addEventListener('handcursorHover', () => {
             exit.style.backgroundColor = 'darkRed';
             exitTimer.on = true;
             continueTimer(exitTimer, exit, "homePage.html");
         });
 
-        exit.addEventListener('mouseleave', () => {
+        exit.addEventListener('handCursorOut', () => {
             exit.style.backgroundColor = "red";
             exit.innerHTML = "Exit!";
             exitTimer.timeLeft = 3;
@@ -132,6 +136,7 @@
                     //Instantiation
                     const qCircle = document.createElement("div");
                     qCircle.classList.add('quest');
+                    qCircle.classList.add('but8');
 
                     //Content
                     qCircle.innerHTML = quest.questName + "<span>" + quest.likes + " likes</span>";
@@ -147,7 +152,7 @@
                     //Callbacks
                     const timer = { timeLeft: 2, on: false };
 
-                    qCircle.addEventListener('mouseover', () => {
+                    qCircle.addEventListener('handcursorHover', () => {
                         // Handle exit action
                         let darkerValue = randomValue - 0.2;
                         darkerValue = darkerValue < 0 ? 0 : darkerValue;
@@ -160,7 +165,7 @@
                         continueTimer(timer, qCircle, "QuestInvite.html");
                     });
 
-                    qCircle.addEventListener('mouseleave', () => {
+                    qCircle.addEventListener('handCursorOut', () => {
                         qCircle.style.backgroundColor = randomColor;
                         qCircle.innerHTML = quest.questName + "<span>" + quest.likes + " likes</span>";
                         timer.timeLeft = 2;

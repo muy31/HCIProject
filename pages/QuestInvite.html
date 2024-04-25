@@ -6,6 +6,9 @@
     <title>Quest Invitation</title>
     <script src="../assets/scripts/timer.js"></script>
     <script src="../assets/scripts/searching.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="../assets/scripts/cursor.js"></script>
+    <link rel="stylesheet" href="../assets/stylesheets/cursor.css">
     <style>
         body {
             margin: 0;
@@ -167,75 +170,75 @@
 </head>
 <body>
 
-<div class="container">
-  <div class="colorful-box">
-    <p id="name-phrase"></p>
-    <p id="contact-phrase"></p>
-  </div>
-  <div class="button-container">
-    <button id="back" class="button">Hover over here to go back</button>
-    <button id="forward" class="like-button">&#10084; Raise a hand to like</button>
-  </div>
-  <!-- Circles -->
-  <div class="circle circle1"></div>
-  <div class="circle circle2"></div>
-  <div class="circle circle3"></div>
-  <div class="circle circle4"></div>
-  <div class="circle circle5"></div>
-  <div class="circle circle6"></div>
-  <div class="circle circle7"></div>
-  <div class="circle circle8"></div>
-  <div class="circle circle9"></div>
-</div>
+    <div class="container">
+        <div class="colorful-box">
+            <p id="name-phrase"></p>
+            <p id="contact-phrase"></p>
+        </div>
+        <div class="button-container">
+            <button class="but8 button" id="back">Hover over here to go back</button>
+            <button id="forward" class="like-button">&#10084; Raise a hand to like</button>
+        </div>
+        <!-- Circles -->
+        <div class="circle circle1"></div>
+        <div class="circle circle2"></div>
+        <div class="circle circle3"></div>
+        <div class="circle circle4"></div>
+        <div class="circle circle5"></div>
+        <div class="circle circle6"></div>
+        <div class="circle circle7"></div>
+        <div class="circle circle8"></div>
+        <div class="circle circle9"></div>
+    </div>
 
-<script>
-    const quest = getQuestData();
+    <script>
+        const quest = getQuestData();
 
-    document.getElementById("back").addEventListener("click", () => {
-        document.location.href = "questList.html";
-    });
+        document.getElementById("back").addEventListener("click", () => {
+            document.location.href = "questList.html";
+        });
 
-    document.getElementById("forward").addEventListener("click", () => {
-        const thisQ = document.getElementById("forward");
+        document.getElementById("forward").addEventListener("click", () => {
+            const thisQ = document.getElementById("forward");
 
-        if (thisQ.innerHTML == "LIKED!") {
-            quest.likes++;
-            console.log("Added 1 to likes!");
+            if (thisQ.innerHTML == "LIKED!") {
+                quest.likes++;
+                console.log("Added 1 to likes!");
+            }
+
+            thisQ.innerHTML = "LIKED!";
+        });
+
+
+        function updateQuestInvite() {
+            document.getElementById("name-phrase").innerHTML = "<b>" + quest.pseudonym + "</b> wants to:<br>" + quest.description
+                + "<br> on <b>" + quest.date + "</b> @ <b>" + quest.time + " EST </b> in <br> <b>" + quest.location + "</b>";
+            const firstName = quest.pseudonym.split(" ")[0];
+            document.getElementById("contact-phrase").innerHTML = "You might be able to contact " + firstName + " at: <br><b>" + quest.email + "</b>";
         }
 
-        thisQ.innerHTML = "LIKED!";
-    });
+        function getQuestData() {
+            return deserializeString(localStorage.getItem("currentQuest"));
+        }
 
+        updateQuestInvite();
 
-    function updateQuestInvite() {
-        document.getElementById("name-phrase").innerHTML = "<b>" + quest.pseudonym + "</b> wants to:<br>" + quest.description
-            + "<br> on <b>" + quest.date + "</b> @ <b>" + quest.time + " EST </b> in <br> <b>" + quest.location + "</b>";
-        const firstName = quest.pseudonym.split(" ")[0];
-        document.getElementById("contact-phrase").innerHTML = "You might be able to contact " + firstName + " at: <br><b>" + quest.email + "</b>";
-    }
-    
-    function getQuestData() {
-        return deserializeString(localStorage.getItem("currentQuest"));
-    }
+        //Exit callbacks
+        const exit = document.getElementById("back");
+        const exitTimer = { timeLeft: 3, on: false };
 
-    updateQuestInvite();
+        exit.addEventListener('handcursorHover', (event) => {
+            exitTimer.on = true;
+            continueTimer(exitTimer, exit, sessionStorage.getItem("previousPage"));
+        });
 
-    //Exit callbacks
-    const exit = document.getElementById("back");
-    const exitTimer = { timeLeft: 3, on: false };
+        exit.addEventListener('handCursorOut', (event) => {
+            exit.innerHTML = "Hover over here to go back";
+            exitTimer.timeLeft = 3;
+            exitTimer.on = false;
+        });
 
-    exit.addEventListener('mouseover', () => {
-        exitTimer.on = true;
-        continueTimer(exitTimer, exit, sessionStorage.getItem("previousPage"));
-    });
-
-    exit.addEventListener('mouseleave', () => {
-        exit.innerHTML = "Hover over here to go back";
-        exitTimer.timeLeft = 3;
-        exitTimer.on = false;
-    });
-
-</script>
+    </script>
 
 </body>
 </html>

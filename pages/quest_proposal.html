@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quest Invitation</title>
     <script src="../assets/scripts/timer.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="../assets/scripts/cursor.js"></script>
+    <link rel="stylesheet" href="../assets/stylesheets/cursor.css">
     <style>
         body {
             margin: 0;
@@ -233,9 +236,10 @@
 
     <div class="container">
         <div class="colorful-box">
+            <img src="../assets/images/qr_code.png" alt="https://anonymousgiraff.github.io/verbose-potato/" style="width:100%;height100%;">
         </div>
         <div class="button-container">
-            <button id="button">Done? Hover over me to go back </button>
+            <button class="but8" id="button">Done? Hover over me to go back </button>
 
         </div>
     </div>
@@ -263,13 +267,13 @@
         const exit = document.getElementById("exit-button");
         const exitTimer = { timeLeft: 3, on: false };
 
-        exit.addEventListener('mouseover', () => {
+        exit.addEventListener('handcursorHover', () => {
             exit.style.backgroundColor = 'darkRed';
             exitTimer.on = true;
             continueTimer(exitTimer, exit, "homePage.html");
         });
 
-        exit.addEventListener('mouseleave', () => {
+        exit.addEventListener('handCursorOut', () => {
             exit.style.backgroundColor = "red";
             exit.innerHTML = "Exit!";
             exitTimer.timeLeft = 3;
@@ -280,13 +284,13 @@
         const back = document.getElementById("button");
         const backTimer = { timeLeft: 3, on: false };
 
-        back.addEventListener('mouseover', () => {
+        back.addEventListener('handcursorHover', () => {
             back.style.backgroundColor = 'darkGreen';
             backTimer.on = true;
             continueTimer(backTimer, back, "QuestHover.html");
         });
 
-        back.addEventListener('mouseleave', () => {
+        back.addEventListener('handCursorOut', (event) => {
             back.style.backgroundColor = "#4caf50";
             back.innerHTML = "Done? Hover over me to go back";
             backTimer.timeLeft = 3;

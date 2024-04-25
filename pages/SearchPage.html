@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Page</title>
     <script src="../assets/scripts/timer.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="../assets/scripts/cursor.js"></script>
+    <link rel="stylesheet" href="../assets/stylesheets/cursor.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -108,12 +111,12 @@
 
 <body>
     <header>
-        <button id="exit-button">Exit!</button>
+        <button class="but8" id="exit-button">Exit!</button>
         
         <div id="sun-back">
 
             <a href="QuestHover.html">
-                <canvas id="sun-canvas" width="120" height="120"></canvas>
+                <canvas class="but8" id="sun-canvas" width="120" height="120"></canvas>
             </a>
                 
             <script src="../assets/scripts/canvasSun.js"></script>
@@ -256,6 +259,7 @@
                 //Content
                 button.style.fontSize = '18px';
                 button.innerHTML = result.questName;
+                button.classList.add("but8");
 
                 //Size
                 const buttonSize = '300px';
@@ -271,7 +275,7 @@
                 const timer = { timeLeft: 2, on: false, orig: result};
 
                 //Button callbacks
-                button.addEventListener('mouseover', () => {
+                button.addEventListener('handcursorHover', (event) => {
                     // Handle exit action
                     let darkerValue = randomValue - 0.2;
                     darkerValue = darkerValue < 0 ? 0 : darkerValue;
@@ -286,7 +290,7 @@
                     continueTimer(timer, button, "QuestInvite.html");
                 });
 
-                button.addEventListener('mouseleave', () => {
+                button.addEventListener('handCursorOut', () => {
                     button.style.backgroundColor = randomColor;
                     button.style.fontSize = '18px';
                     button.innerHTML = timer.orig.questName;
@@ -344,13 +348,13 @@
         const exit = document.getElementById("exit-button");
         const exitTimer = { timeLeft: 3, on: false };
 
-        exit.addEventListener('mouseover', () => {
+        exit.addEventListener('handcursorHover', () => {
             exit.style.backgroundColor = 'darkRed';
             exitTimer.on = true;
             continueTimer(exitTimer, exit, "homePage.html");
         });
 
-        exit.addEventListener('mouseleave', () => {
+        exit.addEventListener('handCursorOut', () => {
             exit.style.backgroundColor = "red";
             exit.innerHTML = "Exit!";
             exitTimer.timeLeft = 3;

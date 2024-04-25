@@ -1,0 +1,8 @@
+#cursor {
+    position: fixed;
+    width: 8vh;
+    height: 8vh;
+    background-color: lightcoral;
+    border-radius: 50%;
+    z-index: 9999; 
+}
